@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot UI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #331D2C;
+            margin: 0;
+            padding: 0;
+        }
+        #chat-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #EFE1D1;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            height: 700px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .user-msg {
+            background-color: #e1f5fe;
+            align-self: flex-end;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+            margin-right: 10px;
+            word-wrap: break-word;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .bot-msg {
+            background-color: #f1f1f1;
+            align-self: flex-start;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+            margin-left: 10px;
+            word-wrap: break-word;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .message img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+        }
+
+        .user-msg-container {
+            justify-content: flex-end;
+            display: flex;
+            align-items: center;
+        }
+
+        .bot-msg-container {
+            justify-content: flex-start;
+            display: flex;
+            align-items: center;
+        }
+        #send-btn {
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+            background-color: #3F2E3E;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #send-btn:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div class="chat-box" id="chat-box">
+        <!-- Chat messages here -->
+    </div>
+    <textarea id="input-box" placeholder="Ask your question..." rows="3"></textarea>
+    <button id="send-btn" onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+    async function sendMessage() {
+        const userMessage = document.getElementById("input-box").value;
+        if (!userMessage) return;
+
+        // Display user's message
+        const chatBox = document.getElementById("chat-box");
+        const userMessageElement = document.createElement("div");
+        userMessageElement.classList.add("message", "user-msg-container");
+
+        userMessageElement.innerHTML = `
+            <div class="user-msg">${userMessage}</div>
+            <img src="{{url_for('static', filename='images/user.png')}}" alt="User Avatar">
+        `;
+        chatBox.appendChild(userMessageElement);
+
+        document.getElementById("input-box").value = ""; // Clear input box
+
+        // Scroll to bottom of the chat
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Send the message to the backend and get the bot's response
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: userMessage })
+        });
+
+        const data = await response.json();
+        const botReply = data.response;
+
+        // Display bot's response
+        const botMessageElement = document.createElement("div");
+        botMessageElement.classList.add("message", "bot-msg-container");
+
+        botMessageElement.innerHTML = `
+            <img src="{{url_for('static', filename='images/bot.png')}}" alt="Bot Avatar">
+            <div class="bot-msg">${botReply}</div>
+        `;
+        chatBox.appendChild(botMessageElement);
+
+        // Scroll to bottom after bot's message
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+
+</body>
+</html>
