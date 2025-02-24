@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from generate import generate_answer
+
 # Initialize the Flask app
 app = Flask(__name__)
 

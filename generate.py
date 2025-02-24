@@ -10,7 +10,7 @@ def generate_answer(question, tokenizer, model):
         output = model.generate(
             input_ids,
             attention_mask=attention_mask,
-            max_length=100,
+            max_length=80,
             num_return_sequences=1,
             no_repeat_ngram_size=2,
             do_sample=True,
