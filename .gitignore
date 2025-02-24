@@ -231,4 +231,4 @@ dmypy.json
 
 ml/data
 *.pickle
-models/trained_modelv1
+models
