@@ -5,8 +5,10 @@ from generate import generate_answer
 app = Flask(__name__)
 
 # Load trained GPT-2 model and tokenizer
-tokenizer = GPT2Tokenizer.from_pretrained("./models/trained_modelv1")
-model = GPT2LMHeadModel.from_pretrained("./models/trained_modelv1")
+path = "./models/trained_modelv1" #MODEL PATH HERE
+
+tokenizer = GPT2Tokenizer.from_pretrained(path)
+model = GPT2LMHeadModel.from_pretrained(path)
 
 @app.route("/")
 def home():

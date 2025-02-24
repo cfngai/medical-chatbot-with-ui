@@ -16,7 +16,7 @@ def generate_answer(question, tokenizer, model):
             do_sample=True,
             top_k=50,
             top_p=0.95,
-            temperature=0.2
+            temperature=0.15
         )
 
     answer = tokenizer.decode(output[0], skip_special_tokens=True)
